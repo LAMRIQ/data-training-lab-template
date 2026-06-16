@@ -1,0 +1,9 @@
+# Profil dbt → DuckDB (fichier local). Sur Snowflake, seul ce bloc change : le SQL des
+# modèles reste identique. C'est tout l'intérêt de dbt : portable d'un warehouse à l'autre.
+data_training_lab:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "../warehouse/dev.duckdb"
+      threads: 4

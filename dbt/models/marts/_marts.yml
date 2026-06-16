@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: fct_sales
+    description: "Faits des ventes complétées, grain = commande. Source pour la BI / le mart exposé."
+    columns:
+      - name: order_id
+        data_tests: [unique, not_null]
+      - name: amount_eur
+        data_tests: [not_null]
+
+  - name: dim_customers
+    description: "Dimension client + valeur vie (LTV)."
+    columns:
+      - name: customer_id
+        data_tests: [unique, not_null]
+      - name: lifetime_value_eur
+        data_tests: [not_null]

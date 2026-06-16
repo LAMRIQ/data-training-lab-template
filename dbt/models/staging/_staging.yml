@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: stg_customers
+    columns:
+      - name: customer_id
+        description: "Clé primaire client."
+        data_tests: [unique, not_null]
+      - name: country_code
+
+  - name: stg_orders
+    columns:
+      - name: order_id
+        description: "Clé primaire commande."
+        data_tests: [unique, not_null]
+      - name: customer_id
+        description: "Clé étrangère vers stg_customers."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_customers')
+                field: customer_id
+      - name: status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["completed", "refunded", "pending"]
