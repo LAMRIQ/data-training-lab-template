@@ -1,6 +1,7 @@
 name: CI
 
-# Le signal de réussite de l'apprenant : lint SQL + build/tests dbt au vert.
+# Le signal de réussite de l'apprenant : lint SQL + build/tests dbt + parsing du DAG, au vert.
+# La CI réutilise les mêmes cibles `make` que le devcontainer → reproductibilité local/CI.
 on:
   push:
     branches: ["**"]
@@ -19,12 +20,5 @@ jobs:
       - name: Install deps
         run: pip install -r requirements.txt
 
-      - name: Lint SQL (sqlfluff)
-        run: sqlfluff lint dbt/models --dialect duckdb
-
-      - name: Ingestion
-        run: python ingestion/load_raw.py
-
-      - name: dbt build (run + tests)
-        working-directory: dbt
-        run: dbt build --profiles-dir .
+      - name: CI pipeline (lint + ingestion + dbt build + DAG)
+        run: make ci

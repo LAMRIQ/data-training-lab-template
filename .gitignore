@@ -13,10 +13,10 @@ dbt/.user.yml
 airflow/airflow.db
 airflow/airflow.cfg
 airflow/logs/
+airflow/scheduler.log
 airflow/webserver_config.py
-airflow/standalone_admin_password.txt
 
 # Python
 __pycache__/
 *.pyc
-.venv/
+.venv*/

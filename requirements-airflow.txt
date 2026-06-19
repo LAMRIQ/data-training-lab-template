@@ -1,0 +1,7 @@
+# Airflow pour l'orchestration (étape 6 du capstone).
+# Pré-installé dans le devcontainer par .devcontainer/setup.sh (avec un fichier de contraintes).
+# Pour un dev local hors devcontainer :
+#   pip install -r requirements-airflow.txt \
+#     --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.10.4/constraints-3.11.txt"
+# La version doit rester alignée avec AIRFLOW_VERSION dans .devcontainer/setup.sh.
+apache-airflow==2.10.4
