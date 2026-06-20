@@ -8,6 +8,23 @@ models:
         data_tests: [unique, not_null]
       - name: country_code
 
+  - name: stg_products
+    columns:
+      - name: product_id
+        description: "Clé primaire produit."
+        data_tests: [unique, not_null]
+      - name: category
+        description: "Catégorie normalisée (minuscules)."
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["accessoires", "écrans", "périphériques", "audio", "stockage", "réseau"]
+      - name: unit_price
+        data_tests: [not_null]
+      - name: cost_eur
+        data_tests: [not_null]
+
   - name: stg_orders
     columns:
       - name: order_id
@@ -25,4 +42,26 @@ models:
         data_tests:
           - accepted_values:
               arguments:
-                values: ["completed", "refunded", "pending"]
+                values: ["completed", "pending", "refunded", "cancelled"]
+
+  - name: stg_order_items
+    description: "Lignes de commande. Grain = (order_id, product_id)."
+    columns:
+      - name: order_id
+        description: "Clé étrangère vers stg_orders."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
+      - name: product_id
+        description: "Clé étrangère vers stg_products."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_products')
+                field: product_id
+      - name: quantity
+        data_tests: [not_null]

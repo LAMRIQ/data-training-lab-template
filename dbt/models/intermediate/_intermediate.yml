@@ -1,0 +1,38 @@
+version: 2
+
+models:
+  - name: int_orders_enriched
+    description: "Ligne de commande enrichie (client + produit) avec marge. Grain = ligne (order_id, product_id)."
+    columns:
+      - name: line_id
+        description: "Clé de substitution de la ligne (md5 de order_id + product_id)."
+        data_tests: [unique, not_null]
+      - name: customer_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_customers')
+                field: customer_id
+      - name: product_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_products')
+                field: product_id
+      - name: margin_eur
+        data_tests: [not_null]
+
+  - name: int_customer_orders
+    description: "Agrégat par client (commandes complétées) : LTV, nb commandes, marge."
+    columns:
+      - name: customer_id
+        description: "Clé primaire client."
+        data_tests: [unique, not_null]
+
+  - name: int_product_price_scd2
+    description: "Historique de prix reconstruit en SCD2 (valid_from/valid_to) depuis product_price_history."
+    columns:
+      - name: product_id
+        data_tests: [not_null]
+      - name: valid_from
+        data_tests: [not_null]

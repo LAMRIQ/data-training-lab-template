@@ -1,20 +1,40 @@
 {
   "name": "data-training-lab",
-  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11-bullseye",
   "features": {
     "ghcr.io/devcontainers/features/git:1": {}
   },
   "postCreateCommand": "bash .devcontainer/setup.sh",
   "forwardPorts": [8080],
   "portsAttributes": {
-    "8080": { "label": "Airflow UI", "onAutoForward": "notify" }
+    "8080": { "label": "Airflow UI (login admin / admin)", "onAutoForward": "notify" }
   },
+  // Variables d'env présentes dans TOUS les shells ET dans les sous-process (le scheduler
+  // Airflow lance dbt en sous-process : il a besoin de DBT_PROFILES_DIR sans passer par .bashrc).
+  "containerEnv": {
+    "AIRFLOW_HOME": "${containerWorkspaceFolder}/airflow",
+    "AIRFLOW__CORE__DAGS_FOLDER": "${containerWorkspaceFolder}/airflow/dags",
+    // Sans ça : ~50 DAGs d'exemple noient le seul qui compte (nordwind_pipeline).
+    "AIRFLOW__CORE__LOAD_EXAMPLES": "False",
+    // Critique en Codespaces : le webserver est derrière un proxy HTTPS. Sans ProxyFix,
+    // la connexion à l'UI boucle / échoue (l'erreur « j'ai pas pu me connecter »).
+    "AIRFLOW__WEBSERVER__ENABLE_PROXY_FIX": "True",
+    // Clé stable partagée par le scheduler + les workers gunicorn : sans elle, le login
+    // peut échouer avec « CSRF session token is missing » (Airflow #28414). Secret de lab,
+    // volontairement non sensible (metastore SQLite local, aucune donnée réelle).
+    "AIRFLOW__WEBSERVER__SECRET_KEY": "lab-secret-key-not-for-prod",
+    "DBT_PROFILES_DIR": "${containerWorkspaceFolder}/dbt"
+  },
+  // 2 cœurs suffisent largement (DuckDB + Airflow scheduler/webserver en process) et doublent
+  // l'autonomie du free tier Codespaces.
+  "hostRequirements": { "cpus": 2 },
   "customizations": {
     "vscode": {
       "extensions": [
         "innoverio.vscode-dbt-power-user",
         "ms-python.python",
-        "redhat.vscode-yaml"
+        "redhat.vscode-yaml",
+        "dorzey.vscode-sqlfluff"
       ]
     }
   }

@@ -2,8 +2,18 @@ version: 2
 
 sources:
   - name: raw
-    description: "Données brutes chargées par l'étape d'ingestion."
+    description: "Données brutes chargées par l'étape d'ingestion (read_csv -> raw.*)."
     schema: raw
     tables:
       - name: customers
+      - name: products
       - name: orders
+        description: "En-tête de commande (1 ligne = 1 commande). updated_at = fraîcheur/CDC."
+        loaded_at_field: updated_at
+        freshness:
+          warn_after: { count: 48, period: hour }
+          error_after: { count: 168, period: hour }
+      - name: order_items
+        description: "Lignes de commande (1 ligne = 1 produit d'une commande)."
+      - name: product_price_history
+        description: "Historique des prix catalogue (pour reconstruire un SCD2)."

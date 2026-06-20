@@ -1,18 +1,39 @@
 version: 2
 
 models:
-  - name: fct_sales
-    description: "Faits des ventes complétées, grain = commande. Source pour la BI / le mart exposé."
+  - name: fct_daily_sales
+    description: "Faits des ventes complétées agrégées par jour (grain = order_date). Source BI."
     columns:
-      - name: order_id
+      - name: order_date
+        description: "Jour de la commande (grain de la table)."
         data_tests: [unique, not_null]
-      - name: amount_eur
+      - name: revenue_eur
+        description: "Chiffre d'affaires du jour (commandes complétées)."
+        data_tests: [not_null]
+      - name: nb_orders
         data_tests: [not_null]
 
-  - name: dim_customers
-    description: "Dimension client + valeur vie (LTV)."
+  - name: dim_products
+    description: "Dimension produit + marge unitaire et ventes réalisées."
+    columns:
+      - name: product_id
+        data_tests: [unique, not_null]
+      - name: margin_pct
+        description: "Taux de marge unitaire en %."
+        data_tests: [not_null]
+
+  - name: fct_customer_metrics
+    description: "Métriques par client : cohorte d'acquisition, LTV, marge et segment."
     columns:
       - name: customer_id
         data_tests: [unique, not_null]
       - name: lifetime_value_eur
+        description: "Valeur vie client (CA des commandes complétées)."
         data_tests: [not_null]
+      - name: segment
+        description: "Segment simplifié selon LTV et nombre de commandes."
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["vip", "regulier", "occasionnel", "sans_achat"]

@@ -1,9 +1,11 @@
-# Warehouse + transformation (Airflow est installé via setup.sh avec ses contraintes)
+# Warehouse + transformation. Airflow vit dans requirements-airflow.txt (installé par setup.sh).
 dbt-duckdb==1.9.1
 duckdb==1.1.3
 pandas==2.2.3
+pyarrow==17.0.0          # df.to_parquet (ingestion Python)
 requests==2.32.3
 
-# Qualité SQL
+# Qualité SQL + tests Python
 sqlfluff==3.3.0
 sqlfluff-templater-dbt==3.3.0
+pytest==8.3.4
