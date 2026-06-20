@@ -8,6 +8,6 @@ select
     cast(customer_id as integer) as customer_id,
     cast(order_date as date) as order_date,
     cast(amount_eur as decimal(10, 2)) as amount_eur,
-    lower(trim(status)) as status,
-    cast(updated_at as timestamp) as updated_at
+    cast(updated_at as timestamp) as updated_at,
+    lower(trim(status)) as status
 from source

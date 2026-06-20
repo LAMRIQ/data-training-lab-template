@@ -5,8 +5,8 @@ with source as (
 
 select
     cast(product_id as integer) as product_id,
-    trim(product_name) as product_name,
-    lower(trim(category)) as category,
     cast(unit_price as decimal(10, 2)) as unit_price,
-    cast(cost_eur as decimal(10, 2)) as cost_eur
+    cast(cost_eur as decimal(10, 2)) as cost_eur,
+    trim(product_name) as product_name,
+    lower(trim(category)) as category
 from source

@@ -11,11 +11,13 @@ with history as (
 select
     product_id,
     valid_from,
-    lead(valid_from) over (
-        partition by product_id order by valid_from
-    ) as valid_to,
     unit_price,
     lead(valid_from) over (
-        partition by product_id order by valid_from
+        partition by product_id
+        order by valid_from
+    ) as valid_to,
+    lead(valid_from) over (
+        partition by product_id
+        order by valid_from
     ) is null as is_current
 from history

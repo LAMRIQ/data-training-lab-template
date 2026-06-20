@@ -5,7 +5,7 @@ with source as (
 
 select
     cast(customer_id as integer) as customer_id,
+    cast(signup_date as date) as signup_date,
     trim(customer_name) as customer_name,
-    upper(trim(country_code)) as country_code,
-    cast(signup_date as date) as signup_date
+    upper(trim(country_code)) as country_code
 from source
