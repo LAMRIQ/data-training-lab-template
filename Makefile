@@ -35,10 +35,12 @@ airflow:  ## Démarre Airflow (UI port 8080, login admin / admin, sans DAG d'exe
 test_py:  ## Tests Python (pytest) des fonctions d'ingestion
 	pytest -q ingestion/tests
 
-check: lint ingest build test_py dag  ## Tout valider en une commande (gestes profonds)
-	@echo "OK — make check : lint + ingestion + dbt build + tests Python + DAG"
+# ingest AVANT lint : sqlfluff utilise le templater dbt, qui compile le projet et a donc
+# besoin du warehouse DuckDB (créé par ingest). Sans ça, le lint échoue « Cannot open dev.duckdb ».
+check: ingest lint build test_py dag  ## Tout valider en une commande (gestes profonds)
+	@echo "OK — make check : ingestion + lint + dbt build + tests Python + DAG"
 
-ci: lint ingest build dag  ## Pipeline complet de validation (utilisé par la CI)
-	@echo "OK — CI locale : lint + ingestion + dbt build + DAG"
+ci: ingest lint build dag  ## Pipeline complet de validation (utilisé par la CI)
+	@echo "OK — CI locale : ingestion + lint + dbt build + DAG"
 
 all: ingest build  ## Raccourci : ingestion + build
